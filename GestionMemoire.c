@@ -42,7 +42,16 @@ void rechercherTableDesPages(struct RequeteMemoire* req, struct SystemeMemoire* 
 }
 
 void ajouterDansMemoire(struct RequeteMemoire* req, struct SystemeMemoire* mem) {
-	//TODO
+	for(int i = 0; i < TAILLE_MEMOIRE; i++) {
+		if (!mem->memoire->utilisee[i]) {
+			mem->memoire->utilisee[i] = 1;
+			mem->memoire->numeroPage[i] = calculerNumeroDePage(req->adresseVirtuelle);
+			mem->memoire->dernierAcces[i] = req->date;
+			mem->memoire->dateCreation[i] = req->date;
+			req->adressePhysique = calculerAdresseComplete(i, calculerDeplacementDansLaPage(req->adresseVirtuelle));
+			return;
+		}
+	}
 }
 
 void mettreAJourTLB(struct RequeteMemoire* req, struct SystemeMemoire* mem) {
