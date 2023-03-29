@@ -31,16 +31,13 @@ void rechercherTLB(struct RequeteMemoire* req, struct SystemeMemoire* mem) {
 void rechercherTableDesPages(struct RequeteMemoire* req, struct SystemeMemoire* mem) {
 	u_int8_t estPresent;
 	int page = calculerNumeroDePage(req->adresseVirtuelle);
+
 	req->estDansTablePages = 0;
 	req->adressePhysique = 0;
 
-	for (int i = 0; i < TAILLE_TP; i++) {
-		estPresent = mem->tp->entreeValide[i];
-		if (mem->tp->numeroCadre[i] == page && estPresent) {
-			req->estDansTablePages = 1;
-			req->adressePhysique = calculerAdresseComplete(mem->tp->numeroCadre[i], calculerDeplacementDansLaPage(req->adresseVirtuelle));
-			return;
-		}
+	if (mem->tp->entreeValide[page]) {
+		req->estDansTablePages = 1;
+		req->adressePhysique = calculerAdresseComplete(mem->tp->numeroCadre[page], calculerDeplacementDansLaPage(req->adresseVirtuelle));
 	}
 }
 
