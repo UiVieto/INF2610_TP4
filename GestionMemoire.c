@@ -56,6 +56,23 @@ void ajouterDansMemoire(struct RequeteMemoire* req, struct SystemeMemoire* mem) 
 
 void mettreAJourTLB(struct RequeteMemoire* req, struct SystemeMemoire* mem) {
 	// TODO
+	int page = calculerNumeroDePage(req->adresseVirtuelle);
+	int cadre = calculerNumeroDePage(req->adressePhysique);
+	int premierEntree = mem->tlb->dernierAcces[0];
+	for (int i = 0; i < TAILLE_TLB; i++) {
+		if (mem->tlb->entreeValide[i] == 0){
+			premierEntree = mem->tlb->dateCreation[i];
+			break;
+		}
+		else if (mem->tlb->dateCreation[i] < premierEntree) {
+			premierEntree = mem->tlb->dateCreation[i]; //
+		}
+	}
+	mem->tlb->numeroPage[premierEntree] = page;
+	mem->tlb->numeroCadre[premierEntree] = cadre;
+	mem->tlb->entreeValide[premierEntree] = 1;
+	mem->tlb->dateCreation[premierEntree] = req->date;
+	//mem->tlb->dernierAcces[premierEntree] = req->date;
 }
 
 // NE PAS MODIFIER
